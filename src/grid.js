@@ -36,12 +36,11 @@ const drawMap = () => {
     for(let eachCol = 0; eachCol < gridCols; eachCol++){
       //on parcours chaque élément du tableau map
       let arrayIndex = eachRow * gridRows + eachCol;
-      //on vérifie si l'élément est un 1 ou un 0
+      //on vérifie si l'élément est un 0(chemin), un 1(mur) ou autre(joueur)
       if(map[arrayIndex] === 1){
         //pour espacer les blocks, on fait tileWidth*eachCol pour créer un espace dans chaque block sur l'axe horizontal, puis pareil pour le vertical avec tileHeight*eachRow.
         //sans ce code, toutes les cases se retrouvent les une par dessu les autres.
         context.fillStyle="lightgrey";
-        context.strokeStyle = "white";
         context.fillRect(tileWidth*eachCol,tileHeight*eachRow,tileWidth,tileHeight);
       } else if(map[arrayIndex] === 0) {
         context.fillStyle="black";
@@ -54,6 +53,9 @@ const drawMap = () => {
   }
 }
 
+//avoir le joueur en numéro 2 dans le tableau map pourrait créer des pb
+//je pense qu'il faudrait avoir 2 couches: une constante map avec des 0 ou 1
+//une autre couche "joueurs" qui vérifie les murs et chemins.
 
 //player
 const spawnPlayer = () => {
@@ -76,22 +78,17 @@ const movePlayer = (move) => {
   //on reset l'emplacement présent du joueur à 0 pour remettre un vide
   //avant de bouger le joueur
   map[playerPosition] = 0;
-
   //on bouge le joueur
   let newposition = playerPosition+move;
   map[newposition] = 2;
+  //2 représente le joueur sur la map.
 }
-
+//export de moveplayer pour faire marcher les boutons de controles dans websocket.js
+export {movePlayer};
+//on spawn le joueur au début de la partie.
 spawnPlayer();
 
-//export de moveplayer pour faire marcher les boutons dans websocket.js
-export {movePlayer};
 
-//avoir le joueur en numéro 2 dans le tableau map pourrait créer des pb
-//je pense qu'il faudrait avoir 2 couches: une constante map avec des 0 ou 1
-//une autre couche "joueurs" qui vérifie les murs et chemins.
-//mon getPlayerPosition ne fonctionne pas car la map n'a pas de "2" 
-//malgré mon spawnPlayer 
 
-//le move vers le bas bouge le joueur mais la position dans map
-//n'est pas update et reste à 0 (position de spawn)
+//todo:
+//créer un constructeur pour les murs, vérifier la collision
