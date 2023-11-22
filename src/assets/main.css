@@ -33,3 +33,25 @@ a,
     padding: 0 2rem;
   }
 }
+
+
+.controls{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+
+/* row/col start row/col end */
+.haut{
+  grid-area: 1/2/1/2;
+}
+#bas{
+  grid-area: 3/2/3/2;
+}
+#droite{
+  grid-area: 2/3/2/3;
+}
+#gauche{
+  grid-area: 2/1/2/1;
+}

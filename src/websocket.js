@@ -1,3 +1,6 @@
+
+import { movePlayer } from "./grid";
+
 let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
         ws.onopen = function (event) {
             //connexion à l'application pacmanmulti
@@ -63,17 +66,18 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             console.log("websocket:"+event.data);
             var parseControl = JSON.parse(event.data);  
             //on vérifie si le message correspond à un controle
-            if (parseControl.message == "haut"){
-              console.log("le contrôle est haut")
+            if (parseControl.message == "haut"){              
+              movePlayer(-10);
             } else if (parseControl.message == "gauche"){
-              console.log("le contrôle est gauche")
-            } else if (parseControl.message == "droite"){
-              console.log("le contrôle est droite")
+              movePlayer(-1);
+            } else if (parseControl.message == "droite"){              
+              movePlayer(1);
             } else if (parseControl.message == "bas"){
-              console.log("le contrôle est bas")
+              movePlayer(10);
             }
 
           };
           ws.onerror = function (event) {
             console.log("Error Websocket : " + event.message);
           };
+
