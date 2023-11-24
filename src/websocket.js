@@ -10,54 +10,51 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             var jsonapp = JSON.stringify(app);
             ws.send(jsonapp);
 
-            //Bouton haut, envoi
-            document.getElementById("haut").addEventListener("click", function (event) {
-     
-              let hautcontrol = "haut";
-              var sendControl = {
-                message: hautcontrol
-              };
-              var jsonControl = JSON.stringify(sendControl);
-              ws.send(jsonControl);
-              
-              });
+       
 
-              //Bouton gauche, envoi
-            document.getElementById("gauche").addEventListener("click", function (event) {
-     
-              let gauchecontrol = "gauche";
-              var sendControl = {
-                message: gauchecontrol
-              };
-              var jsonControl = JSON.stringify(sendControl);
-              ws.send(jsonControl);
-              
-              });
+              //Bouton haut touche clavier
+              document.addEventListener('keydown', function(event) {
+                switch(event.key) {
+                  case 'ArrowUp':
+                    let hautcontrol = "haut";
+                    var sendControl = {
+                      message: hautcontrol
+                    };
+                    var jsonControl = JSON.stringify(sendControl);
+                    ws.send(jsonControl);
+                    break;
 
-              //Bouton droite, envoi
-            document.getElementById("droite").addEventListener("click", function (event) {
-     
-              let droitecontrol = "droite";
-              var sendControl = {
-                message: droitecontrol
-              };
-              var jsonControl = JSON.stringify(sendControl);
-              ws.send(jsonControl);
-              
-              });
+                  case 'ArrowDown':
+                    let bascontrol = "bas";
+                    var sendControl = {
+                      message: bascontrol
+                    };
+                    var jsonControl = JSON.stringify(sendControl);
+                    ws.send(jsonControl);
+                    break;
 
-              //Bouton bas, envoi
-            document.getElementById("bas").addEventListener("click", function (event) {
-     
-              let bascontrol = "bas";
-              var sendControl = {
-                message: bascontrol
-              };
-              var jsonControl = JSON.stringify(sendControl);
-              ws.send(jsonControl);
-              
+                  case 'ArrowLeft':
+                    let gauchecontrol = "gauche";
+                    var sendControl = {
+                      message: gauchecontrol
+                    };
+                    var jsonControl = JSON.stringify(sendControl);
+                    ws.send(jsonControl);
+                    break;
+
+                  case 'ArrowRight':
+                    let droitecontrol = "droite";
+                    var sendControl = {
+                      message: droitecontrol
+                    };
+                    var jsonControl = JSON.stringify(sendControl);
+                    ws.send(jsonControl);
+                    break;
+                }
               });
           };
+
+          
           ws.onclose = function (event) {
             console.log("Disconnected from websocket !");
           };
