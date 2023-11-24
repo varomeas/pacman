@@ -12,7 +12,7 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
 
        
 
-              //Bouton haut touche clavier
+              //Boutons touches clavier
               document.addEventListener('keydown', function(event) {
                 switch(event.key) {
                   case 'ArrowUp':
@@ -23,7 +23,7 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
                     var jsonControl = JSON.stringify(sendControl);
                     ws.send(jsonControl);
                     break;
-
+                  
                   case 'ArrowDown':
                     let bascontrol = "bas";
                     var sendControl = {
@@ -54,7 +54,7 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
               });
           };
 
-          
+
           ws.onclose = function (event) {
             console.log("Disconnected from websocket !");
           };
