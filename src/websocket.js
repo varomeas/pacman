@@ -34,23 +34,23 @@ window.onload = () => {
   window.requestAnimationFrame(updateAll);
 }
 
-function drawMap(newmap){
-  for(let eachRow = 0; eachRow < gridRows; eachRow++){
-    for(let eachCol = 0; eachCol < gridCols; eachCol++){
-      //on parcours chaque élément du tableau map
+function drawMap() {
+  // Effacer le canvas avant de redessiner
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let eachRow = 0; eachRow < gridRows; eachRow++) {
+    for (let eachCol = 0; eachCol < gridCols; eachCol++) {
       let arrayIndex = eachRow * gridRows + eachCol;
-      //on vérifie si l'élément est un 0(chemin), un 1(mur) ou autre(joueur)
-      if(newmap[arrayIndex] === 1){
-        //pour espacer les blocks, on fait tileWidth*eachCol pour créer un espace dans chaque block sur l'axe horizontal, puis pareil pour le vertical avec tileHeight*eachRow.
-        //sans ce code, toutes les cases se retrouvent les une par dessu les autres.
-        context.fillStyle="lightgrey";
-        context.fillRect(tileWidth*eachCol,tileHeight*eachRow,tileWidth,tileHeight);
-      } else if(newmap[arrayIndex] === 0) {
-        context.fillStyle="black";
-        context.fillRect(tileWidth*eachCol,tileHeight*eachRow,tileWidth,tileHeight);
+
+      if (map[arrayIndex] === 1) {
+        context.fillStyle = "lightgrey";
+        context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
+      } else if (map[arrayIndex] === 0) {
+        context.fillStyle = "black";
+        context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       } else {
-        context.fillStyle="blue";
-        context.fillRect(tileWidth*eachCol,tileHeight*eachRow,tileWidth,tileHeight);
+        context.fillStyle = "blue";
+        context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }
     }
   }
@@ -78,13 +78,15 @@ const getPlayerPosition = () => {
 
 const movePlayer = (move) => {
   let playerPosition = getPlayerPosition();
-  //on reset l'emplacement présent du joueur à 0 pour remettre un vide
-  //avant de bouger le joueur
-  map[playerPosition] = 0;
-  //on bouge le joueur
-  let newposition = playerPosition+move;
-  map[newposition] = 2;
-  //2 représente le joueur sur la map.
+  let newposition = playerPosition + move;
+
+  // Vérifier si la nouvelle position est valide avant de déplacer le joueur
+  if (newposition >= 0 && newposition < map.length && map[newposition] !== 1) {
+    // Réinitialiser l'emplacement actuel du joueur à 0 pour le vider
+    map[playerPosition] = 0;
+    // Déplacer le joueur
+    map[newposition] = 2;
+  }
 }
 //export de moveplayer pour faire marcher les boutons de controles dans websocket.js
 export {movePlayer};
