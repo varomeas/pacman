@@ -177,14 +177,3 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             console.log("Error Websocket : " + event.message);
           };
 
-          function myFunction() {
-            // Your code logic here
-            var jsonmap = {
-              message: map
-            };
-            var sendmap = JSON.stringify(jsonmap);
-            ws.send(sendmap);
-          }
-          
-          // Set the interval to run the function every 100 milliseconds
-          setInterval(myFunction, 2000);
