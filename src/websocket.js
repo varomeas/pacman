@@ -89,6 +89,8 @@ spawnPlayer();
 //todo:
 //créer un constructeur pour les murs, vérifier la collision
 
+
+
 let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
         ws.onopen = function (event) {
             //connexion à l'application pacmanmulti
@@ -138,6 +140,25 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
                     break;
                 }
               });
+
+                              // Écouteur d'événements pour la touche "S"
+                document.addEventListener('keydown', function(event) {
+                  if (event.key === 's' || event.key === 'S') {
+                    // Fonction pour créer et envoyer la carte via WebSocket
+                    function sendMapViaWebSocket() {
+                      var jsonmap = {
+                        message: map
+                      };
+                      var sendmap = JSON.stringify(jsonmap);
+                      ws.send(sendmap);
+                      
+                    }
+
+                    // Appel de la fonction pour envoyer la carte via WebSocket
+                    sendMapViaWebSocket();
+                  }
+                });
+
           };
 
 
@@ -166,14 +187,26 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             } else if (parseControl.message == "bas"){
               movePlayer(10);
             }
-
-
-
             // newmap = map + move du joueur
-
+ 
 
           };
           ws.onerror = function (event) {
             console.log("Error Websocket : " + event.message);
           };
 
+
+
+          function sendMapEvery100ms() {
+            setInterval(() => {
+              var jsonmap = {
+                message: map
+              };
+              var sendmap = JSON.stringify(jsonmap);
+              ws.send(sendmap);
+              console.log("loop")
+            }, 1000);
+          }
+          sendMapEvery100ms();
+
+          
