@@ -154,69 +154,26 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             if (Array.isArray(newmap.message)) {
               drawMap(newmap.message);
               console.log("map websocket updated")
-
-              
-
-
-              
             } else {}
 
             //on vérifie si le message correspond à un controle
             if (parseControl.message == "haut"){              
               movePlayer(-10);
-              // newmap = map + move du joueur
-            var jsonmap = {
-              message: newmap.message
-            };
-            var sendmap = JSON.stringify(jsonmap);
-            ws.send(sendmap);
-            console.log("map websocket updated")
             } else if (parseControl.message == "gauche"){
               movePlayer(-1);
-              // newmap = map + move du joueur
-            var jsonmap = {
-              message: newmap.message
-            };
-            var sendmap = JSON.stringify(jsonmap);
-            ws.send(sendmap);
-            console.log("map websocket updated")
             } else if (parseControl.message == "droite"){              
               movePlayer(1);
-              // newmap = map + move du joueur
-            var jsonmap = {
-              message: newmap.message
-            };
-            var sendmap = JSON.stringify(jsonmap);
-            ws.send(sendmap);
-            console.log("map websocket updated")
             } else if (parseControl.message == "bas"){
               movePlayer(10);
-              // newmap = map + move du joueur
-            var jsonmap = {
-              message: newmap.message
-            };
-            var sendmap = JSON.stringify(jsonmap);
-            ws.send(sendmap);
-            console.log("map websocket updated")
             }
 
 
 
-            
+            // newmap = map + move du joueur
+
+
           };
-          
           ws.onerror = function (event) {
             console.log("Error Websocket : " + event.message);
           };
 
-          function myFunction() {
-            // Your code logic here
-            var jsonmap = {
-              message: map
-            };
-            var sendmap = JSON.stringify(jsonmap);
-            ws.send(sendmap);
-          }
-          
-          // Set the interval to run the function every 100 milliseconds
-          setInterval(myFunction, 2000);
