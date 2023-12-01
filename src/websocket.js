@@ -25,16 +25,9 @@ let map = [
   0,0,0,0,0,0,0,0,0,0,
 ]
 
-const updateAll = () => {
-  drawMap();
-  window.requestAnimationFrame(updateAll);
-}
 
-window.onload = () => {
-  window.requestAnimationFrame(updateAll);
-}
 
-function drawMap() {
+function drawMap(newmap) {
   // Effacer le canvas avant de redessiner
   context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -42,10 +35,10 @@ function drawMap() {
     for (let eachCol = 0; eachCol < gridCols; eachCol++) {
       let arrayIndex = eachRow * gridRows + eachCol;
 
-      if (map[arrayIndex] === 1) {
+      if (newmap[arrayIndex] === 1) {
         context.fillStyle = "lightgrey";
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
-      } else if (map[arrayIndex] === 0) {
+      } else if (newmap[arrayIndex] === 0) {
         context.fillStyle = "black";
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       } else {
@@ -89,10 +82,7 @@ const movePlayer = (move) => {
   }
 }
 //export de moveplayer pour faire marcher les boutons de controles dans websocket.js
-export {movePlayer};
-export {map};
-export {updateAll};
-export {drawMap};
+
 //on spawn le joueur au début de la partie.
 spawnPlayer();
 
@@ -107,8 +97,6 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             }
             var jsonapp = JSON.stringify(app);
             ws.send(jsonapp);
-
-       
 
               //Boutons touches clavier
               document.addEventListener('keydown', function(event) {
@@ -158,9 +146,15 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
           };
           ws.onmessage = function (event) {
             //on récupère le message (controle) reçu
-            console.log("websocket:"+event.data);
-            var newmap = JSON.parse(event.data);  
-            var parseControl = JSON.parse(event.data); 
+            console.log("websocket:"+event.data); 
+            var parseControl = JSON.parse(event.data);
+            
+            // récupération de la map
+            var newmap = JSON.parse(event.data);
+            if (Array.isArray(newmap.message)) {
+              drawMap(newmap.message);
+              console.log("map websocket updated")
+            } else {}
 
             //on vérifie si le message correspond à un controle
             if (parseControl.message == "haut"){              
@@ -173,9 +167,10 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
               movePlayer(10);
             }
 
+
+
             // newmap = map + move du joueur
 
-            drawMap(newmap.message);
 
           };
           ws.onerror = function (event) {
