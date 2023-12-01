@@ -86,58 +86,8 @@ const movePlayer = (move) => {
 //on spawn le joueur au début de la partie.
 spawnPlayer();
 
-
-
-
-
-//Fonction écoute de la map et envoi si pas dispo
-// Variable pour suivre l'état d'envoi de la map
-let mapSent = false;
-
-function listenAndSendMap() {
-  let mapReceived = false; // Indique si la map a été reçue
-  let timeout = 5000; // Durée de l'attente en millisecondes (5 secondes)
-
-  const timer = setTimeout(() => {
-    if (!mapReceived) {
-      console.log("La map n'a pas été reçue dans les 5 secondes. Création et envoi de la map...");
-      sendMap(); // Envoi de la map
-    }
-  }, timeout);
-
-  // Écoute des messages du WebSocket
-  ws.onmessage = function (event) {
-    var newmap = JSON.parse(event.data);
-
-    if (Array.isArray(newmap.message)) {
-      console.log("Map reçue du WebSocket");
-      mapReceived = true; // Indique que la map a été reçue
-      clearTimeout(timer); // Annule le timeout car la map a été reçue
-      mapSent = false; // Réinitialise la variable pour permettre l'envoi de la prochaine map
-      drawMap(newmap.message); // Dessiner la nouvelle map reçue
-    }
-    // Autres traitements...
-  };
-}
-
-// Fonction pour envoyer la map sur le WebSocket
-function sendMap() {
-  // Votre logique pour créer et envoyer la map via WebSocket
-  var jsonmap = {
-    message: map
-  };
-  var sendmap = JSON.stringify(jsonmap);
-  ws.send(sendmap);
-  mapSent = true; // Mettre à jour l'état pour indiquer que la map a été envoyée
-}
-
-// Appel de la fonction pour commencer à écouter le WebSocket
-
-
-
-
-
-
+//todo:
+//créer un constructeur pour les murs, vérifier la collision
 
 let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
         ws.onopen = function (event) {
@@ -147,8 +97,6 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             }
             var jsonapp = JSON.stringify(app);
             ws.send(jsonapp);
-
-            listenAndSendMap();
 
               //Boutons touches clavier
               document.addEventListener('keydown', function(event) {
@@ -259,6 +207,4 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
           ws.onerror = function (event) {
             console.log("Error Websocket : " + event.message);
           };
-
-
 
