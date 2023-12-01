@@ -156,37 +156,6 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
               console.log("map websocket updated")
             } else {}
 
-            //draw la map si elle n'a pas été envoyé, sinon affiche la
-            // Variable pour suivre l'état d'envoi de la map
-            let mapSent = false;
-
-            function myFunction() {
-              if (!mapSent) {
-                // Votre logique pour créer et envoyer la map via WebSocket
-                var jsonmap = {
-                  message: map
-                };
-                var sendmap = JSON.stringify(jsonmap);
-                ws.send(sendmap);
-
-                // Mettre à jour l'état pour indiquer que la map a été envoyée
-                mapSent = true;
-              }
-            }
-
-            ws.onmessage = function (event) {
-              var newmap = JSON.parse(event.data);
-
-              if (Array.isArray(newmap.message)) {
-                drawMap(newmap.message);
-                console.log("map websocket updated");
-
-                // Réinitialiser l'état pour permettre l'envoi de la prochaine map
-                mapSent = false;
-              }
-              // Autres traitements...
-            };
-
             //on vérifie si le message correspond à un controle
             if (parseControl.message == "haut"){              
               movePlayer(-10);
@@ -198,7 +167,7 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
               movePlayer(10);
             }
 
-            
+
 
             // newmap = map + move du joueur
 
