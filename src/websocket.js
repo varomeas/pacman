@@ -74,8 +74,6 @@ let map = [
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 ];
 
-
-
 function drawMap(newmap) {
   // Efface le canvas avant de redessiner
   context.clearRect(0, 0, canvas.width, canvas.height);
@@ -87,18 +85,25 @@ function drawMap(newmap) {
       if (newmap[arrayIndex] === 1) {
         context.fillStyle = "rgb(43, 43, 220)"; //Mur
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
-      } else if (newmap[arrayIndex] === 0) {
-        context.fillStyle = "black"; //Vide
-        context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
-      }else if (newmap[arrayIndex] === 4) {
-          context.fillStyle = "red"; // Ghost
+      } else if (newmap[arrayIndex] === 2){
+        context.fillStyle = "yellow";
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }
-      else if (newmap[arrayIndex] === 16) {
+        else if (newmap[arrayIndex] === 0) {
+        context.fillStyle = "black"; //Vide
+        context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
+      } else if (newmap[arrayIndex] === 4) {
+          context.fillStyle = "red"; // Ghost
+        context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
+      } else if (newmap[arrayIndex] === 6) {
+        context.fillStyle = "purple"; // Collision Pacman + Ghost GAME OVER
+        alert("Game Over! You touched the ghost.");
+        location.reload(); // Refresh the page to restart the game
+      } else if (newmap[arrayIndex] === 16) {
         context.fillStyle = "green"; // Ghost
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }else {
-        context.fillStyle = "yellow";
+        context.fillStyle = "purple"; // autre
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }
     }
@@ -132,13 +137,7 @@ const moveTo = (player,move) => {
   // Check if the new position is valid before moving the player
   if (newposition >= 0 && newposition < map.length && !(map[newposition] & WALL)) {
     // Check for collisions with the ghost
-    if (map[newposition] & GHOST) {
-      // Game over logic
-      alert("Game Over! You touched the ghost.");
-      // Optionally, you can reset the game or perform other actions
-      // Example: location.reload(); // Reloads the page to restart the game
-      return;
-    }
+    
     // Move the player
     map[playerPosition] &= ~player; // Clear the player's current position
     map[newposition] |= player; // Set the player's new position
