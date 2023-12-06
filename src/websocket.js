@@ -11,7 +11,7 @@ const gridCols = 15;   // Updated grid columns to match the larger map
 //défiinir chaque variable
 const WALL = 1;
 const EMPTY = 0;
-const PLAYER = 2;
+const PACMAN = 2;
 const GHOST = 4;
 
 //séléction du joueur
@@ -21,11 +21,11 @@ pacmanButton.addEventListener("click", selectPlayer);
 ghostButton.addEventListener("click", selectGhost);
 let PlayerControl; // Declare the PlayerControl variable outside the functions
 function selectPlayer() {
-  PlayerControl = "pacman";
+  PlayerControl = PACMAN;
   console.log(PlayerControl);
 }
 function selectGhost() {
-  PlayerControl = "ghost";
+  PlayerControl = GHOST;
   console.log(PlayerControl);
 }
 
@@ -109,12 +109,12 @@ function drawMap(newmap) {
 const spawnPlayer = () => {
   //position de départ
   let spawnPosition = 16;
-  map[spawnPosition] = PLAYER;
+  map[spawnPosition] = PACMAN;
 }
 spawnPlayer();
 
 const getPlayerPosition = () => {
-  let playerIndex = map.indexOf(PLAYER);
+  let playerIndex = map.indexOf(PACMAN);
   return playerIndex;
 }
 
@@ -132,8 +132,8 @@ const movePlayer = (move) => {
       return;
     }
     // Move the player
-    map[playerPosition] &= ~PLAYER; // Clear the player's current position
-    map[newposition] |= PLAYER; // Set the player's new position
+    map[playerPosition] &= ~PACMAN; // Clear the player's current position
+    map[newposition] |= PACMAN; // Set the player's new position
   }
 }
 
@@ -159,6 +159,33 @@ const moveGhost = (move) => {
     map[newposition] |= GHOST; // Set the GHOST's new position
   }
 
+
+
+
+  const getPositionOf = (player) => {
+    let index = map.indexOf(player);
+    return index;
+  }
+
+const moveTo = (player,move) => {
+  let playerPosition = getPositionOf(player);
+  let newposition = playerPosition + move;
+  // Check if the new position is valid before moving the player
+  if (newposition >= 0 && newposition < map.length && !(map[newposition] & WALL)) {
+    // Check for collisions with the ghost
+    if (map[newposition] & GHOST) {
+      // Game over logic
+      alert("Game Over! You touched the ghost.");
+      // Optionally, you can reset the game or perform other actions
+      // Example: location.reload(); // Reloads the page to restart the game
+      return;
+    }
+    // Move the player
+    map[playerPosition] &= ~player; // Clear the player's current position
+    map[newposition] |= player; // Set the player's new position
+  }
+}
+
 let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
         ws.onopen = function (event) {
             //connexion à l'application pacmanmulti
@@ -171,40 +198,26 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
               //Boutons touches clavier
               document.addEventListener('keydown', function(event) {
                 switch(event.key) {
+
                   case 'ArrowUp':
-                    let hautcontrol = "haut"+PlayerControl;
-                    var sendControl = {
-                      message: hautcontrol
-                    };
-                    var jsonControl = JSON.stringify(sendControl);
-                    ws.send(jsonControl);
+                    moveTo(PlayerControl,-15);
+                    sendMap();
                     break;
 
                   case 'ArrowDown':
-                    let bascontrol = "bas"+PlayerControl;
-                    var sendControl = {
-                      message: bascontrol
-                    };
-                    var jsonControl = JSON.stringify(sendControl);
-                    ws.send(jsonControl);
+                    
+                    moveTo(PlayerControl,15);
+                    sendMap();
                     break;
 
                   case 'ArrowLeft':
-                    let gauchecontrol = "gauche"+PlayerControl;
-                    var sendControl = {
-                      message: gauchecontrol
-                    };
-                    var jsonControl = JSON.stringify(sendControl);
-                    ws.send(jsonControl);
+                    moveTo(PlayerControl,-1);
+                    sendMap();
                     break;
 
                   case 'ArrowRight':
-                    let droitecontrol = "droite"+PlayerControl;
-                    var sendControl = {
-                      message: droitecontrol
-                    };
-                    var jsonControl = JSON.stringify(sendControl);
-                    ws.send(jsonControl);
+                    moveTo(PlayerControl,1);
+                    sendMap();
                     break;
                 }
               });
@@ -224,39 +237,6 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             if (Array.isArray(newmap.message)) {
               drawMap(newmap.message);
             } else {}
-
-            //pour son perso, on réalise le move en local et on envoie la map updated.
-
-            //on vérifie si le message correspond à un controle pour pacman
-            if (parseControl.message == "hautpacman"){
-              //le movePlayer s'effectue en local (sans afficher l'update' sur l'écran) et envoi la map. une fois reçue sur le websocket, elle s'update dans ws.onsend
-              movePlayer(-15);
-              sendMap();
-            } else if (parseControl.message == "gauchepacman"){
-              movePlayer(-1);
-              sendMap();
-            } else if (parseControl.message == "droitepacman"){
-              movePlayer(1);
-              sendMap();
-            } else if (parseControl.message == "baspacman"){
-              movePlayer(15);
-              sendMap();
-            }
-
-            //on vérifie si le message correspond à un controle pour ghost
-            if (parseControl.message == "hautghost"){
-              moveGhost(-15);
-              sendMap();
-            } else if (parseControl.message == "gaucheghost"){
-              moveGhost(-1);
-              sendMap();
-            } else if (parseControl.message == "droiteghost"){
-              moveGhost(1);
-              sendMap();
-            } else if (parseControl.message == "basghost"){
-              moveGhost(15);
-              sendMap();
-            }
 
           };
           ws.onerror = function (event) {
