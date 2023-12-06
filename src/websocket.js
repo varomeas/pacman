@@ -153,27 +153,39 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             var jsonapp = JSON.stringify(app);
             ws.send(jsonapp);
 
+
+
               //Boutons touches clavier
               document.addEventListener('keydown', function(event) {
-                switch(event.key) {
+                //Limiteur spam / délai entre les mouvements
+                let canSendMap = true;
+                if (canSendMap) {
+                  canSendMap = false;
+                  setTimeout(() => {
+                    canSendMap = true;
+                  }, 200);
 
-                  case 'ArrowUp':
-                    moveTo(PlayerControl,-15);
-                    break;
+                  switch(event.key) {
 
-                  case 'ArrowDown':
-                    moveTo(PlayerControl,15);
-                    break;
-
-                  case 'ArrowLeft':
-                    moveTo(PlayerControl,-1);
-                    break;
-
-                  case 'ArrowRight':
-                    moveTo(PlayerControl,1);
-                    break;
+                    case 'ArrowUp':
+                      moveTo(PlayerControl,-15);
+                      break;
+  
+                    case 'ArrowDown':
+                      moveTo(PlayerControl,15);
+                      break;
+  
+                    case 'ArrowLeft':
+                      moveTo(PlayerControl,-1);
+                      break;
+  
+                    case 'ArrowRight':
+                      moveTo(PlayerControl,1);
+                      break;
+                  }
+                  sendMap();
                 }
-                sendMap();
+                
               });
           };
 
