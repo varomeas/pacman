@@ -208,28 +208,7 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
                     break;
                 }
               });
-
-                              // Écouteur d'événements pour la touche "S"
-                // document.addEventListener('keydown', function(event) {
-                //   if (event.key === 's' || event.key === 'S') {
-                //     // Fonction pour créer et envoyer la carte via WebSocket
-                //     function sendMapViaWebSocket() {
-                //       var jsonmap = {
-                //         message: map
-                //       };
-                //       var sendmap = JSON.stringify(jsonmap);
-                //       ws.send(sendmap);
-                //
-                //     }
-                //
-                //     // Appel de la fonction pour envoyer la carte via WebSocket
-                //     sendMapViaWebSocket();
-                //   }
-                // });
-
           };
-
-
 
 
           ws.onclose = function (event) {
@@ -246,8 +225,12 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
               drawMap(newmap.message);
             } else {}
 
+
+            //pour son perso, on réalise le move en local et on envoie la map updated.
+
             //on vérifie si le message correspond à un controle pour pacman
             if (parseControl.message == "hautpacman"){
+              //le movePlayer s'effectue en local (sans afficher l'update' sur l'écran) et envoi la map. une fois reçue sur le websocket, elle s'update dans ws.onsend
               movePlayer(-15);
               sendMap();
             } else if (parseControl.message == "gauchepacman"){
@@ -275,9 +258,6 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
               moveGhost(15);
               sendMap();
             }
-
-            // newmap = map + move du joueur
-
 
           };
           ws.onerror = function (event) {
