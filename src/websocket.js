@@ -113,31 +113,6 @@ const spawnPlayer = () => {
 }
 spawnPlayer();
 
-const getPlayerPosition = () => {
-  let playerIndex = map.indexOf(PACMAN);
-  return playerIndex;
-}
-
-const movePlayer = (move) => {
-  let playerPosition = getPlayerPosition();
-  let newposition = playerPosition + move;
-  // Check if the new position is valid before moving the player
-  if (newposition >= 0 && newposition < map.length && !(map[newposition] & WALL)) {
-    // Check for collisions with the ghost
-    if (map[newposition] & GHOST) {
-      // Game over logic
-      alert("Game Over! You touched the ghost.");
-      // Optionally, you can reset the game or perform other actions
-      // Example: location.reload(); // Reloads the page to restart the game
-      return;
-    }
-    // Move the player
-    map[playerPosition] &= ~PACMAN; // Clear the player's current position
-    map[newposition] |= PACMAN; // Set the player's new position
-  }
-}
-
-
 //GHOSTS
 const spawnGhost = () => {
   //position de départ
@@ -145,22 +120,6 @@ const spawnGhost = () => {
    map[ghostPosition] |= GHOST;
 }
 spawnGhost();
-
-const getGhostPosition = () => {
-  let ghostIndex = map.indexOf(GHOST);
-  return ghostIndex;
-}
-
-const moveGhost = (move) => {
-  let ghostPosition = getGhostPosition();
-  let newposition = ghostPosition + move;
-    // Move the ghost
-    map[ghostPosition] &= ~GHOST; // Clear the GHOST's current position
-    map[newposition] |= GHOST; // Set the GHOST's new position
-  }
-
-
-
 
   const getPositionOf = (player) => {
     let index = map.indexOf(player);
@@ -201,25 +160,21 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
 
                   case 'ArrowUp':
                     moveTo(PlayerControl,-15);
-                    sendMap();
                     break;
 
                   case 'ArrowDown':
-                    
                     moveTo(PlayerControl,15);
-                    sendMap();
                     break;
 
                   case 'ArrowLeft':
                     moveTo(PlayerControl,-1);
-                    sendMap();
                     break;
 
                   case 'ArrowRight':
                     moveTo(PlayerControl,1);
-                    sendMap();
                     break;
                 }
+                sendMap();
               });
           };
 
@@ -235,6 +190,7 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             // récupération de la map et update
             var newmap = JSON.parse(event.data);
             if (Array.isArray(newmap.message)) {
+              map = newmap.message;
               drawMap(newmap.message);
             } else {}
 
