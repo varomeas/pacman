@@ -153,7 +153,6 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             var jsonapp = JSON.stringify(app);
             ws.send(jsonapp);
 
-
             let canSendMap = true;
               //Boutons touches clavier
               document.addEventListener('keyup', function(event) {
