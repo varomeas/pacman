@@ -13,6 +13,7 @@ const WALL = 1;
 const EMPTY = 0;
 const PACMAN = 2;
 const GHOST = 4;
+const POINTS = 16;
 
 //séléction du joueur
 const pacmanButton = document.getElementById("pacman");
@@ -100,9 +101,10 @@ function drawMap(newmap) {
         alert("Game Over! You touched the ghost.");
         location.reload(); // Refresh the page to restart the game
       } else if (newmap[arrayIndex] === 16) {
-        context.fillStyle = "green"; // Ghost
-        context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
-      } else {
+          context.fillStyle = "green"
+        context.arc((tileWidth * eachCol) + tileWidth/2, (tileHeight * eachRow)+tileHeight/2, 5, 0, 2 * Math.PI);
+        context.fill() //points
+      }else {
         context.fillStyle = "purple"; // autre
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }
@@ -125,6 +127,14 @@ const spawnGhost = () => {
   map[ghostPosition] |= GHOST;
 }
 spawnGhost();
+
+const placePoints =()=> {
+
+  map[23] |= POINTS;
+
+}
+
+placePoints()
 
 const getPositionOf = (player) => {
   let index = map.indexOf(player);
