@@ -235,9 +235,6 @@ ws.onopen = function (event) {
             break;
         }
       }
-
-
-
     }
 
   });
@@ -257,7 +254,7 @@ ws.onmessage = function (event) {
   if (Array.isArray(newmap.message)) {
     map = newmap.message;
     drawMap(newmap.message);
-  } else { }
+  } else {}
 
   //si on est pacman, on écoute les move des phantomes, update et send.
   if(PlayerControl==PACMAN){
