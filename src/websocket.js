@@ -57,21 +57,21 @@ startButton.addEventListener("click", sendMap);
 
 //map de 15 par 15
 let map = [
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-  1,0,1,1,1,1,1,1,1,1,1,1,1,0,1,
-  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-  1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,
-  1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,
-  1,0,0,0,1,0,0,1,0,0,1,0,0,0,1,
-  1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,
-  1,0,1,1,1,1,1,1,1,1,1,1,0,0,1,
-  1,0,1,0,0,0,0,0,0,0,0,1,0,0,1,
-  1,0,0,0,0,0,0,1,0,0,1,1,0,0,1,
-  1,0,1,1,0,1,1,1,0,0,0,1,0,0,1,
-  1,0,1,1,0,0,0,1,1,1,0,0,0,0,1,
-  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+  1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
+  1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1,
+  1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
+  1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
+  1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
+  1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1,
+  1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1,
+  1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1,
+  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 ];
 
 function drawMap(newmap) {
@@ -85,15 +85,15 @@ function drawMap(newmap) {
       if (newmap[arrayIndex] === 1) {
         context.fillStyle = "rgb(43, 43, 220)"; //Mur
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
-      } else if (newmap[arrayIndex] === 2){
+      } else if (newmap[arrayIndex] === 2) {
         context.fillStyle = "yellow";
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }
-        else if (newmap[arrayIndex] === 0) {
+      else if (newmap[arrayIndex] === 0) {
         context.fillStyle = "black"; //Vide
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       } else if (newmap[arrayIndex] === 4) {
-          context.fillStyle = "red"; // Ghost
+        context.fillStyle = "red"; // Ghost
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       } else if (newmap[arrayIndex] === 6) {
         context.fillStyle = "purple"; // Collision Pacman + Ghost GAME OVER
@@ -102,7 +102,7 @@ function drawMap(newmap) {
       } else if (newmap[arrayIndex] === 16) {
         context.fillStyle = "green"; // Ghost
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
-      }else {
+      } else {
         context.fillStyle = "purple"; // autre
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }
@@ -122,22 +122,22 @@ spawnPlayer();
 const spawnGhost = () => {
   //position de départ
   let ghostPosition = 28;
-   map[ghostPosition] |= GHOST;
+  map[ghostPosition] |= GHOST;
 }
 spawnGhost();
 
-  const getPositionOf = (player) => {
-    let index = map.indexOf(player);
-    return index;
-  }
+const getPositionOf = (player) => {
+  let index = map.indexOf(player);
+  return index;
+}
 
-const moveTo = (player,move) => {
+const moveTo = (player, move) => {
   let playerPosition = getPositionOf(player);
   let newposition = playerPosition + move;
   // Check if the new position is valid before moving the player
   if (newposition >= 0 && newposition < map.length && !(map[newposition] & WALL)) {
     // Check for collisions with the ghost
-    
+
     // Move the player
     map[playerPosition] &= ~player; // Clear the player's current position
     map[newposition] |= player; // Set the player's new position
@@ -145,72 +145,137 @@ const moveTo = (player,move) => {
 }
 
 let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
-        ws.onopen = function (event) {
-            //connexion à l'application pacmanmulti
-            var app = {
-              app: "pacmanmulti"
-            }
-            var jsonapp = JSON.stringify(app);
-            ws.send(jsonapp);
+ws.onopen = function (event) {
+  //connexion à l'application pacmanmulti
+  var app = {
+    app: "pacmanmulti"
+  }
+  var jsonapp = JSON.stringify(app);
+  ws.send(jsonapp);
 
-            let canSendMap = true;
-              //Boutons touches clavier
-              document.addEventListener('keyup', function(event) {
-                //Limiteur spam / délai entre les mouvements
-                
-                if (canSendMap) {
-                  canSendMap = false;
-                  setTimeout(() => {
-                    canSendMap = true;
-                  }, 300);
+  let canSendMap = true;
+  //Boutons touches clavier
+  document.addEventListener('keyup', function (event) {
+    //Limiteur spam / délai entre les mouvements
 
-                  switch(event.key) {
-
-                    case 'ArrowUp':
-                      moveTo(PlayerControl,-15);
-                      break;
-  
-                    case 'ArrowDown':
-                      moveTo(PlayerControl,15);
-                      break;
-  
-                    case 'ArrowLeft':
-                      moveTo(PlayerControl,-1);
-                      break;
-  
-                    case 'ArrowRight':
-                      moveTo(PlayerControl,1);
-                      break;
-                  }
-                  sendMap();
-                }
-                
-              });
-          };
+    if (canSendMap) {
+      canSendMap = false;
+      setTimeout(() => {
+        canSendMap = true;
+      }, 300);
 
 
-          ws.onclose = function (event) {
-            console.log("Disconnected from websocket !");
-          };
-          ws.onmessage = function (event) {
-            //on récupère le message (controle) reçu
-            console.log("websocket:"+event.data);
-            var parseControl = JSON.parse(event.data);
+      //si le joueur est Pacman (hote), il fait ses mouvements en local et envoie la map aux autres joueurs.
+      if (PlayerControl == PACMAN) {
+        switch (event.key) {
+          case 'ArrowUp':
+            moveTo(PlayerControl, -15);
+            break;
 
-            // récupération de la map et update
-            var newmap = JSON.parse(event.data);
-            if (Array.isArray(newmap.message)) {
-              map = newmap.message;
-              drawMap(newmap.message);
-            } else {}
+          case 'ArrowDown':
+            moveTo(PlayerControl, 15);
+            break;
 
-          };
-          ws.onerror = function (event) {
-            console.log("Error Websocket : " + event.message);
-          };
+          case 'ArrowLeft':
+            moveTo(PlayerControl, -1);
+            break;
+
+          case 'ArrowRight':
+            moveTo(PlayerControl, 1);
+            break;
+        }
+        sendMap();
+      } else {
+        // si le joueur n'est pas PACMAN(hote), il envoit ses moves sur le websocket.
+        switch (event.key) {
+          case 'ArrowUp':
+            let hautcontrol = "haut"+PlayerControl;
+            var sendControl = {
+              message: hautcontrol
+            };
+            var jsonControl = JSON.stringify(sendControl);
+            ws.send(jsonControl);
+            break;
+
+          case 'ArrowDown':
+            let bascontrol = "bas"+PlayerControl;
+            var sendControl = {
+              message: bascontrol
+            };
+            var jsonControl = JSON.stringify(sendControl);
+            ws.send(jsonControl);
+            break;
+
+          case 'ArrowLeft':
+            let gauchecontrol = "gauche"+PlayerControl;
+            var sendControl = {
+              message: gauchecontrol
+            };
+            var jsonControl = JSON.stringify(sendControl);
+            ws.send(jsonControl);
+            break;
+
+          case 'ArrowRight':
+            let droitecontrol = "droite"+PlayerControl;
+            var sendControl = {
+              message: droitecontrol
+            };
+            var jsonControl = JSON.stringify(sendControl);
+            ws.send(jsonControl);
+            break;
+        }
+      }
 
 
 
-          
+    }
+
+  });
+};
+
+
+ws.onclose = function (event) {
+  console.log("Disconnected from websocket !");
+};
+ws.onmessage = function (event) {
+  //on récupère le message (controle) reçu
+  console.log("websocket:" + event.data);
+  var parseControl = JSON.parse(event.data);
+
+  // récupération de la map et update
+  var newmap = JSON.parse(event.data);
+  if (Array.isArray(newmap.message)) {
+    map = newmap.message;
+    drawMap(newmap.message);
+  } else { }
+
+  //si on est pacman, on écoute les move des phantomes, update et send.
+  if(PlayerControl==PACMAN){
+
+    if (parseControl.message == "haut4"){
+      moveTo(GHOST, -15);
+      sendMap();
+    } else if (parseControl.message == "gauche4"){
+      moveTo(GHOST, -1);
+      sendMap();
+    } else if (parseControl.message == "droite4"){
+      moveTo(GHOST, 1);
+      sendMap();
+    } else if (parseControl.message == "bas4"){
+      console.log("message est bas4, GHOST="+GHOST);
+      moveTo(GHOST, 15);
+      sendMap();
+    }
+
+  }
+
+};
+ws.onerror = function (event) {
+  console.log("Error Websocket : " + event.message);
+};
+
+
+
+
 
 
