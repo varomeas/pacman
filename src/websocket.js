@@ -77,7 +77,7 @@ let map = [
 
 
 function drawMap(newmap) {
-  // Effacer le canvas avant de redessiner
+  // Efface le canvas avant de redessiner
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   for (let eachRow = 0; eachRow < gridRows; eachRow++) {
@@ -85,10 +85,10 @@ function drawMap(newmap) {
       let arrayIndex = eachRow * gridRows + eachCol;
 
       if (newmap[arrayIndex] === 1) {
-        context.fillStyle = "lightgrey";
+        context.fillStyle = "rgb(43, 43, 220)"; //Mur
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       } else if (newmap[arrayIndex] === 0) {
-        context.fillStyle = "black";
+        context.fillStyle = "black"; //Vide
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }else if (newmap[arrayIndex] === 4) {
           context.fillStyle = "red"; // Ghost
@@ -108,7 +108,7 @@ function drawMap(newmap) {
 //PLAYER
 const spawnPlayer = () => {
   //position de départ
-  let spawnPosition = 20;
+  let spawnPosition = 16;
   map[spawnPosition] = PLAYER;
 }
 spawnPlayer();
@@ -141,7 +141,7 @@ const movePlayer = (move) => {
 //GHOSTS
 const spawnGhost = () => {
   //position de départ
-  let ghostPosition = 88;
+  let ghostPosition = 28;
    map[ghostPosition] |= GHOST;
 }
 spawnGhost();
@@ -219,12 +219,11 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             console.log("websocket:"+event.data);
             var parseControl = JSON.parse(event.data);
 
-            // récupération de la map
+            // récupération de la map et update
             var newmap = JSON.parse(event.data);
             if (Array.isArray(newmap.message)) {
               drawMap(newmap.message);
             } else {}
-
 
             //pour son perso, on réalise le move en local et on envoie la map updated.
 
