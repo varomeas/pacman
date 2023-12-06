@@ -2,27 +2,77 @@ const canvas = document.getElementById("grid");
 const context = canvas.getContext("2d");
 
 //Paramètres de la grid
-const tileWidth = 40;
-const tileHeight = 40;
-const gridRows = 10;
-const gridCols = 10;
+const tileWidth = 26;  // Adjusted tile width to fit the larger grid within the canvas
+const tileHeight = 26; // Adjusted tile height to fit the larger grid within the canvas
+const gridRows = 15;   // Updated grid rows to match the larger map
+const gridCols = 15;   // Updated grid columns to match the larger map
+
 
 //défiinir chaque variable
-//let boost = 1>>2
+const WALL = 1;
+const EMPTY = 0;
+const PLAYER = 2;
+const GHOST = 4;
 
-//map de 10 par 10
+//séléction du joueur
+const pacmanButton = document.getElementById("pacman");
+const ghostButton = document.getElementById("ghost");
+pacmanButton.addEventListener("click", selectPlayer);
+ghostButton.addEventListener("click", selectGhost);
+let PlayerControl; // Declare the PlayerControl variable outside the functions
+function selectPlayer() {
+  PlayerControl = "pacman";
+  console.log(PlayerControl);
+}
+function selectGhost() {
+  PlayerControl = "ghost";
+  console.log(PlayerControl);
+}
+
+
+function sendMap() {
+  var jsonmap = {
+    message: map
+  };
+  var sendmap = JSON.stringify(jsonmap);
+  ws.send(sendmap);
+}
+//démarrage du jeu
+const startButton = document.getElementById("start");
+startButton.addEventListener("click", sendMap);
+
+//save de la map 10 par 10 qui marche
+// let map = [
+//   1,1,1,1,1,1,1,1,1,1,
+//   0,0,0,0,0,0,0,0,0,0,
+//   0,0,0,0,0,0,0,0,0,0,
+//   0,0,0,0,0,0,0,0,0,0,
+//   0,0,0,0,0,0,0,0,0,0,
+//   0,0,0,0,0,0,0,0,0,0,
+//   0,0,0,0,0,0,0,0,0,0,
+//   0,0,0,0,0,0,0,0,0,0,
+//   0,0,0,0,0,0,0,0,0,0,
+//   0,0,0,0,0,0,0,0,0,0,
+// ]
+
+//map de 15 par 15
 let map = [
-  1,1,1,1,1,1,1,1,1,1,
-  0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,
-]
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+];
 
 
 
@@ -55,56 +105,59 @@ function drawMap(newmap) {
   }
 }
 
-//avoir le joueur en numéro 2 dans le tableau map pourrait créer des pb
-//je pense qu'il faudrait avoir 2 couches: une constante map avec des 0 ou 1
-//une autre couche "joueurs" qui vérifie les murs et chemins.
-
-//player
+//PLAYER
 const spawnPlayer = () => {
   //position de départ
-  let spawnPosition = 5;
-  //update le nombre de l'array map à 2 pour représenter le joueur:
-  //2 représente le joueur 1.
-  map[spawnPosition] = 2;
+  let spawnPosition = 20;
+  map[spawnPosition] = PLAYER;
 }
+spawnPlayer();
 
 const getPlayerPosition = () => {
-  let playerIndex = map.indexOf(2);
-  //le player position est un index (0=première case de map)
-  //console.log("playerposition"+playerIndex);
+  let playerIndex = map.indexOf(PLAYER);
   return playerIndex;
 }
 
 const movePlayer = (move) => {
   let playerPosition = getPlayerPosition();
   let newposition = playerPosition + move;
-
   // Check if the new position is valid before moving the player
   if (newposition >= 0 && newposition < map.length && !(map[newposition] & WALL)) {
     // Check for collisions with the ghost
     if (map[newposition] & GHOST) {
       // Game over logic
-      alert("Game Over! You touched the ghost. Score: " + playerScore);
+      alert("Game Over! You touched the ghost.");
       // Optionally, you can reset the game or perform other actions
       // Example: location.reload(); // Reloads the page to restart the game
       return;
     }
-
     // Move the player
     map[playerPosition] &= ~PLAYER; // Clear the player's current position
     map[newposition] |= PLAYER; // Set the player's new position
-
   }
 }
-//export de moveplayer pour faire marcher les boutons de controles dans websocket.js
-
-//on spawn le joueur au début de la partie.
-spawnPlayer();
-
-//todo:
-//créer un constructeur pour les murs, vérifier la collision
 
 
+//GHOSTS
+const spawnGhost = () => {
+  //position de départ
+  let ghostPosition = 88;
+   map[ghostPosition] |= GHOST;
+}
+spawnGhost();
+
+const getGhostPosition = () => {
+  let ghostIndex = map.indexOf(GHOST);
+  return ghostIndex;
+}
+
+const moveGhost = (move) => {
+  let ghostPosition = getGhostPosition();
+  let newposition = ghostPosition + move;
+    // Move the ghost
+    map[ghostPosition] &= ~GHOST; // Clear the GHOST's current position
+    map[newposition] |= GHOST; // Set the GHOST's new position
+  }
 
 let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
         ws.onopen = function (event) {
@@ -119,7 +172,7 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
               document.addEventListener('keydown', function(event) {
                 switch(event.key) {
                   case 'ArrowUp':
-                    let hautcontrol = "haut";
+                    let hautcontrol = "haut"+PlayerControl;
                     var sendControl = {
                       message: hautcontrol
                     };
@@ -128,7 +181,7 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
                     break;
 
                   case 'ArrowDown':
-                    let bascontrol = "bas";
+                    let bascontrol = "bas"+PlayerControl;
                     var sendControl = {
                       message: bascontrol
                     };
@@ -137,7 +190,7 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
                     break;
 
                   case 'ArrowLeft':
-                    let gauchecontrol = "gauche";
+                    let gauchecontrol = "gauche"+PlayerControl;
                     var sendControl = {
                       message: gauchecontrol
                     };
@@ -146,7 +199,7 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
                     break;
 
                   case 'ArrowRight':
-                    let droitecontrol = "droite";
+                    let droitecontrol = "droite"+PlayerControl;
                     var sendControl = {
                       message: droitecontrol
                     };
@@ -177,6 +230,8 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
           };
 
 
+
+
           ws.onclose = function (event) {
             console.log("Disconnected from websocket !");
           };
@@ -189,19 +244,38 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             var newmap = JSON.parse(event.data);
             if (Array.isArray(newmap.message)) {
               drawMap(newmap.message);
-              console.log("map websocket updated")
             } else {}
 
-            //on vérifie si le message correspond à un controle
-            if (parseControl.message == "haut"){
-              movePlayer(-10);
-            } else if (parseControl.message == "gauche"){
+            //on vérifie si le message correspond à un controle pour pacman
+            if (parseControl.message == "hautpacman"){
+              movePlayer(-15);
+              sendMap();
+            } else if (parseControl.message == "gauchepacman"){
               movePlayer(-1);
-            } else if (parseControl.message == "droite"){
+              sendMap();
+            } else if (parseControl.message == "droitepacman"){
               movePlayer(1);
-            } else if (parseControl.message == "bas"){
-              movePlayer(10);
+              sendMap();
+            } else if (parseControl.message == "baspacman"){
+              movePlayer(15);
+              sendMap();
             }
+
+            //on vérifie si le message correspond à un controle pour ghost
+            if (parseControl.message == "hautghost"){
+              moveGhost(-15);
+              sendMap();
+            } else if (parseControl.message == "gaucheghost"){
+              moveGhost(-1);
+              sendMap();
+            } else if (parseControl.message == "droiteghost"){
+              moveGhost(1);
+              sendMap();
+            } else if (parseControl.message == "basghost"){
+              moveGhost(15);
+              sendMap();
+            }
+
             // newmap = map + move du joueur
 
 
@@ -212,89 +286,6 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
 
 
 
-          function sendMapEvery100ms() {
-            setInterval(() => {
-              var jsonmap = {
-                message: map
-              };
-              var sendmap = JSON.stringify(jsonmap);
-              ws.send(sendmap);
-              console.log("loop")
-            }, 1000);
-          }
-          sendMapEvery100ms();
-
-// Ghost
-const WALL = 1;
-const EMPTY = 0;
-const PLAYER = 2;
-const GHOST = 4;
+          
 
 
-// Ghost
-const spawnGhost = () => {
-  // Choose a random position for the ghost
-  let ghostPosition = Math.floor(Math.random() * (gridRows * gridCols));
-  while (map[ghostPosition] !== EMPTY) {
-    // Ensure the ghost doesn't spawn on a wall or player
-    ghostPosition = Math.floor(Math.random() * (gridRows * gridCols));
-  }
-
-  // Update the map to include the ghost
-  map[ghostPosition] |= GHOST;
-}
-
-// ...
-const moveGhosts = () => {
-  for (let i = 0; i < map.length; i++) {
-    if (map[i] & GHOST) {
-      // If the current position contains a ghost, move it one step
-      map[i] &= ~GHOST; // Clear the ghost's current position
-      let randomDirection = Math.floor(Math.random() * 4); // 0: up, 1: down, 2: left, 3: right
-
-      // Calculate the new position based on the random direction
-      let newPosition;
-      switch (randomDirection) {
-        case 0:
-          newPosition = i - gridCols; // Move up
-          break;
-        case 1:
-          newPosition = i + gridCols; // Move down
-          break;
-        case 2:
-          newPosition = i - 1; // Move left
-          break;
-        case 3:
-          newPosition = i + 1; // Move right
-          break;
-        default:
-          newPosition = i; // No movement
-      }
-
-      // Check if the new position is valid before moving the ghost
-      if (newPosition >= 0 && newPosition < map.length && !(map[newPosition] & WALL)) {
-        // Set the new position for the ghost
-        map[newPosition] |= GHOST;
-
-        // Check for collisions with the player
-        if (map[newPosition] & PLAYER) {
-          // Game over logic
-          alert("Game Over! The ghost caught you.");
-          // Optionally, you can reset the game or perform other actions
-          // Example: location.reload(); // Reloads the page to restart the game
-          return;
-        }
-      } else {
-        // Restore the ghost to its original position if the new position is invalid
-        map[i] |= GHOST;
-      }
-      break; // Break the loop after moving one ghost to avoid moving multiple ghosts in the same iteration
-    }
-  }
-}
-
-// Spawn initial ghosts
-spawnGhost();
-
-// Move ghosts every 1000ms (1 second)
-setInterval(moveGhosts, 1000);

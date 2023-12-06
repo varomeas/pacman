@@ -55,3 +55,8 @@ a,
 #gauche{
   grid-area: 2/1/2/1;
 }
+
+canvas{
+  width: 200%;
+  height: auto;
+}
