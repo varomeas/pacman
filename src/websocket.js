@@ -154,16 +154,16 @@ let ws = new WebSocket("ws://kevin-chapron.fr:8090/ws");
             ws.send(jsonapp);
 
 
-
+            let canSendMap = true;
               //Boutons touches clavier
               document.addEventListener('keydown', function(event) {
                 //Limiteur spam / délai entre les mouvements
-                let canSendMap = true;
+                
                 if (canSendMap) {
                   canSendMap = false;
                   setTimeout(() => {
                     canSendMap = true;
-                  }, 200);
+                  }, 100);
 
                   switch(event.key) {
 
