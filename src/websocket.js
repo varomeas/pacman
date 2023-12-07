@@ -8,12 +8,16 @@ const gridRows = 15;   // Updated grid rows to match the larger map
 const gridCols = 15;   // Updated grid columns to match the larger map
 
 
-//défiinir chaque variable
+//définir chaque variable
 const WALL = 1;
 const EMPTY = 0;
 const PACMAN = 2;
 const GHOST = 4;
 const POINTS = 16;
+
+//initialisation du compteur de score
+let score = 0;
+
 
 //séléction du joueur
 const pacmanButton = document.getElementById("pacman");
@@ -64,7 +68,7 @@ let map = [
   1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
   1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
-  1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1,
+  1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1,
   1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
   1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
@@ -98,18 +102,34 @@ function drawMap(newmap) {
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       } else if (newmap[arrayIndex] === 6) {
         context.fillStyle = "purple"; // Collision Pacman + Ghost GAME OVER
-        alert("Game Over! You touched the ghost.");
+        alert("Game Over! You touched the ghost. Your Score: " + score);
         location.reload(); // Refresh the page to restart the game
-      } else if (newmap[arrayIndex] === 16) {
-          context.fillStyle = "green"
-        context.arc((tileWidth * eachCol) + tileWidth/2, (tileHeight * eachRow)+tileHeight/2, 5, 0, 2 * Math.PI);
-        context.fill() //points
+      }else if (newmap[arrayIndex] === POINTS) { //Points
+        context.fillStyle = "black"; //fond du point est noir
+        context.fillRect(
+            tileWidth * eachCol,
+            tileHeight * eachRow,
+            tileWidth,
+            tileHeight
+        );
+        context.beginPath(); //le point est un cercle vert
+        context.arc((tileWidth * eachCol)+tileWidth/2, (tileHeight * eachRow)+tileHeight/2, 5, 0, 2 * Math.PI)
+        context.fillStyle = "green"
+        context.fill()
+        context.closePath();
       }else {
         context.fillStyle = "purple"; // autre
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }
     }
   }
+  drawScore()
+}
+
+const drawScore = () => {
+  context.fillStyle = "white";
+  context.font = "20px Arial";
+  context.fillText("Score: " + score, 10, 25);
 }
 
 //PLAYER
@@ -128,13 +148,16 @@ const spawnGhost = () => {
 }
 spawnGhost();
 
-const placePoints =()=> {
-
-  map[23] |= POINTS;
-
+//on met des points partout où les cases sont vides
+const placePointsOnEmptySpaces = () => {
+  for (let i = 0; i < map.length/4; i++) { //j'ai divisé par 4 parce que quand je les mets tous on se déconnecte du websocket
+    if (map[i] === EMPTY) {
+      map[i] = POINTS;
+    }
+  }
 }
 
-placePoints()
+placePointsOnEmptySpaces()
 
 const getPositionOf = (player) => {
   let index = map.indexOf(player);
@@ -146,7 +169,13 @@ const moveTo = (player, move) => {
   let newposition = playerPosition + move;
   // Check if the new position is valid before moving the player
   if (newposition >= 0 && newposition < map.length && !(map[newposition] & WALL)) {
-    // Check for collisions with the ghost
+    // Si le joueur passe sur une case avec des points on augmente le score
+    if(map[newposition] === 16){
+      score += 10;
+      map[newposition] = player;
+    }
+    // Quand le joueur passe sur la case du point, on met la case à vide
+
 
     // Move the player
     map[playerPosition] &= ~player; // Clear the player's current position
@@ -280,9 +309,3 @@ ws.onmessage = function (event) {
 ws.onerror = function (event) {
   console.log("Error Websocket : " + event.message);
 };
-
-
-
-
-
-
