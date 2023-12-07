@@ -2,10 +2,10 @@ const canvas = document.getElementById("grid");
 const context = canvas.getContext("2d");
 
 //Paramètres de la grid
-const tileWidth = 26;  // Adjusted tile width to fit the larger grid within the canvas
-const tileHeight = 26; // Adjusted tile height to fit the larger grid within the canvas
-const gridRows = 15;   // Updated grid rows to match the larger map
-const gridCols = 15;   // Updated grid columns to match the larger map
+const tileWidth = 26;
+const tileHeight = 26;
+const gridRows = 15;
+const gridCols = 15;
 
 
 //défiinir chaque variable
@@ -20,7 +20,8 @@ const pacmanButton = document.getElementById("pacman");
 const ghostButton = document.getElementById("ghost");
 pacmanButton.addEventListener("click", selectPlayer);
 ghostButton.addEventListener("click", selectGhost);
-let PlayerControl; // Declare the PlayerControl variable outside the functions
+
+let PlayerControl;
 function selectPlayer() {
   PlayerControl = PACMAN;
   console.log(PlayerControl);
@@ -29,7 +30,6 @@ function selectGhost() {
   PlayerControl = GHOST;
   console.log(PlayerControl);
 }
-
 
 function sendMap() {
   var jsonmap = {
@@ -77,6 +77,8 @@ let map = [
 
 function drawMap(newmap) {
   // Efface le canvas avant de redessiner
+  let pacmanimg = new Image();
+  pacmanimg.src = "./src/assets/img/Pacman.png";
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   for (let eachRow = 0; eachRow < gridRows; eachRow++) {
@@ -87,8 +89,7 @@ function drawMap(newmap) {
         context.fillStyle = "rgb(43, 43, 220)"; //Mur
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       } else if (newmap[arrayIndex] === 2) {
-        context.fillStyle = "yellow";
-        context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
+        context.drawImage(pacmanimg, tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }
       else if (newmap[arrayIndex] === 0) {
         context.fillStyle = "black"; //Vide
@@ -101,10 +102,10 @@ function drawMap(newmap) {
         alert("Game Over! You touched the ghost.");
         location.reload(); // Refresh the page to restart the game
       } else if (newmap[arrayIndex] === 16) {
-          context.fillStyle = "green"
-        context.arc((tileWidth * eachCol) + tileWidth/2, (tileHeight * eachRow)+tileHeight/2, 5, 0, 2 * Math.PI);
+        context.fillStyle = "green"
+        context.arc((tileWidth * eachCol) + tileWidth / 2, (tileHeight * eachRow) + tileHeight / 2, 5, 0, 2 * Math.PI);
         context.fill() //points
-      }else {
+      } else {
         context.fillStyle = "purple"; // autre
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }
@@ -128,7 +129,7 @@ const spawnGhost = () => {
 }
 spawnGhost();
 
-const placePoints =()=> {
+const placePoints = () => {
 
   map[23] |= POINTS;
 
@@ -165,7 +166,7 @@ ws.onopen = function (event) {
 
   let canSendMap = true;
   //Boutons touches clavier
-  document.addEventListener('keyup', function (event) {
+  document.addEventListener('keydown', function (event) {
     //Limiteur spam / délai entre les mouvements
 
     if (canSendMap) {
@@ -173,7 +174,6 @@ ws.onopen = function (event) {
       setTimeout(() => {
         canSendMap = true;
       }, 300);
-
 
       //si le joueur est Pacman (hote), il fait ses mouvements en local et envoie la map aux autres joueurs.
       if (PlayerControl == PACMAN) {
@@ -199,7 +199,7 @@ ws.onopen = function (event) {
         // si le joueur n'est pas PACMAN(hote), il envoit ses moves sur le websocket.
         switch (event.key) {
           case 'ArrowUp':
-            let hautcontrol = "haut"+PlayerControl;
+            let hautcontrol = "haut" + PlayerControl;
             var sendControl = {
               message: hautcontrol
             };
@@ -208,7 +208,7 @@ ws.onopen = function (event) {
             break;
 
           case 'ArrowDown':
-            let bascontrol = "bas"+PlayerControl;
+            let bascontrol = "bas" + PlayerControl;
             var sendControl = {
               message: bascontrol
             };
@@ -217,7 +217,7 @@ ws.onopen = function (event) {
             break;
 
           case 'ArrowLeft':
-            let gauchecontrol = "gauche"+PlayerControl;
+            let gauchecontrol = "gauche" + PlayerControl;
             var sendControl = {
               message: gauchecontrol
             };
@@ -226,7 +226,7 @@ ws.onopen = function (event) {
             break;
 
           case 'ArrowRight':
-            let droitecontrol = "droite"+PlayerControl;
+            let droitecontrol = "droite" + PlayerControl;
             var sendControl = {
               message: droitecontrol
             };
@@ -254,22 +254,22 @@ ws.onmessage = function (event) {
   if (Array.isArray(newmap.message)) {
     map = newmap.message;
     drawMap(newmap.message);
-  } else {}
+  } else { }
 
   //si on est pacman, on écoute les move des phantomes, update et send.
-  if(PlayerControl==PACMAN){
+  if (PlayerControl == PACMAN) {
 
-    if (parseControl.message == "haut4"){
+    if (parseControl.message == "haut4") {
       moveTo(GHOST, -15);
       sendMap();
-    } else if (parseControl.message == "gauche4"){
+    } else if (parseControl.message == "gauche4") {
       moveTo(GHOST, -1);
       sendMap();
-    } else if (parseControl.message == "droite4"){
+    } else if (parseControl.message == "droite4") {
       moveTo(GHOST, 1);
       sendMap();
-    } else if (parseControl.message == "bas4"){
-      console.log("message est bas4, GHOST="+GHOST);
+    } else if (parseControl.message == "bas4") {
+      console.log("message est bas4, GHOST=" + GHOST);
       moveTo(GHOST, 15);
       sendMap();
     }
