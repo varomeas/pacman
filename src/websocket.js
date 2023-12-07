@@ -93,7 +93,9 @@ function drawMap(newmap) {
         context.fillStyle = "rgb(43, 43, 220)"; //Mur
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       } else if (newmap[arrayIndex] === 2) {
+        pacmanimg.onload = function() {
         context.drawImage(pacmanimg, tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
+        }
       }
       else if (newmap[arrayIndex] === 0) {
         context.fillStyle = "black"; //Vide
