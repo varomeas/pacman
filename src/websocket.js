@@ -15,8 +15,9 @@ const PACMAN = 2;
 const GHOST = 4;
 const POINTS = 16;
 
-//initialisation du compteur de score
-let score = 0;
+//initialisation des compteurs de scores
+let scorePacman = 0;
+let scoreGhost = 0;
 
 
 //séléction du joueur
@@ -101,7 +102,7 @@ function drawMap(newmap) {
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       } else if (newmap[arrayIndex] === 6) {
         context.fillStyle = "purple"; // Collision Pacman + Ghost GAME OVER
-        alert("Game Over! You touched the ghost. Your Score: " + score);
+        alert("Game Over! You touched the ghost. Your Score: " + scorePacman);
         location.reload(); // Refresh the page to restart the game
       }else if (newmap[arrayIndex] === POINTS) { //Points
         context.fillStyle = "black"; //fond du point est noir
@@ -128,7 +129,7 @@ function drawMap(newmap) {
 const drawScore = () => {
   context.fillStyle = "white";
   context.font = "20px Arial";
-  context.fillText("Score: " + score, 10, 25);
+  context.fillText("Score Pacman: " + scorePacman + " | Score Ghost: " + scoreGhost, 10, 20);
 }
 
 //PLAYER
@@ -169,12 +170,16 @@ const moveTo = (player, move) => {
   // Check if the new position is valid before moving the player
   if (newposition >= 0 && newposition < map.length && !(map[newposition] & WALL)) {
     // Si le joueur passe sur une case avec des points on augmente le score
-    if(map[newposition] === 16){
-      score += 10;
+    if(map[newposition] === POINTS) {
+      if(player == PACMAN){
+        scorePacman += 10;
+        console.log("bzzzz")
+      } else if (player === 4){
+        scoreGhost += 10;
+      }
+
       map[newposition] = player;
     }
-    // Quand le joueur passe sur la case du point, on met la case à vide
-
 
     // Move the player
     map[playerPosition] &= ~player; // Clear the player's current position
@@ -289,7 +294,7 @@ ws.onmessage = function (event) {
   if(PlayerControl==PACMAN){
 
     if (parseControl.message == "haut4"){
-      moveTo(GHOST, -15);
+      moveTo(GHOST, -14);
       sendMap();
     } else if (parseControl.message == "gauche4"){
       moveTo(GHOST, -1);
@@ -299,7 +304,7 @@ ws.onmessage = function (event) {
       sendMap();
     } else if (parseControl.message == "bas4"){
       console.log("message est bas4, GHOST="+GHOST);
-      moveTo(GHOST, 15);
+      moveTo(GHOST, 14);
       sendMap();
     }
 
