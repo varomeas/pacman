@@ -2,18 +2,23 @@ const canvas = document.getElementById("grid");
 const context = canvas.getContext("2d");
 
 //Paramètres de la grid
-const tileWidth = 26;
-const tileHeight = 26;
-const gridRows = 15;
-const gridCols = 15;
+const tileWidth = 26;  // Adjusted tile width to fit the larger grid within the canvas
+const tileHeight = 26; // Adjusted tile height to fit the larger grid within the canvas
+const gridRows = 14;   // Updated grid rows to match the larger map
+const gridCols = 14;   // Updated grid columns to match the larger map
 
 
-//défiinir chaque variable
+//définir chaque variable
 const WALL = 1;
 const EMPTY = 0;
 const PACMAN = 2;
 const GHOST = 4;
 const POINTS = 16;
+
+//initialisation des compteurs de scores
+let scorePacman = 0;
+let scoreGhost = 0;
+
 
 //séléction du joueur
 const pacmanButton = document.getElementById("pacman");
@@ -58,21 +63,20 @@ startButton.addEventListener("click", sendMap);
 
 //map de 15 par 15
 let map = [
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-  1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
-  1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
-  1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1,
-  1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1,
-  1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1,
+  1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
+  1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1,
+  1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
+  1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1,
+  1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1,
+  1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1,
+  1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1,
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 ];
 
 function drawMap(newmap) {
@@ -99,24 +103,40 @@ function drawMap(newmap) {
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       } else if (newmap[arrayIndex] === 6) {
         context.fillStyle = "purple"; // Collision Pacman + Ghost GAME OVER
-        alert("Game Over! You touched the ghost.");
+        alert("Game Over! You touched the ghost. Your Score: " + scorePacman);
         location.reload(); // Refresh the page to restart the game
-      } else if (newmap[arrayIndex] === 16) {
+      }else if (newmap[arrayIndex] === POINTS) { //Points
+        context.fillStyle = "black"; //fond du point est noir
+        context.fillRect(
+            tileWidth * eachCol,
+            tileHeight * eachRow,
+            tileWidth,
+            tileHeight
+        );
+        context.beginPath(); //le point est un cercle vert
+        context.arc((tileWidth * eachCol)+tileWidth/2, (tileHeight * eachRow)+tileHeight/2, 5, 0, 2 * Math.PI)
         context.fillStyle = "green"
-        context.arc((tileWidth * eachCol) + tileWidth / 2, (tileHeight * eachRow) + tileHeight / 2, 5, 0, 2 * Math.PI);
-        context.fill() //points
-      } else {
+        context.fill()
+        context.closePath();
+      }else {
         context.fillStyle = "purple"; // autre
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       }
     }
   }
+  drawScore()
+}
+
+const drawScore = () => {
+  context.fillStyle = "white";
+  context.font = "20px Arial";
+  context.fillText("Score Pacman: " + scorePacman + " | Score Ghost: " + scoreGhost, 10, 20);
 }
 
 //PLAYER
 const spawnPlayer = () => {
   //position de départ
-  let spawnPosition = 16;
+  let spawnPosition = 15;
   map[spawnPosition] = PACMAN;
 }
 spawnPlayer();
@@ -124,18 +144,21 @@ spawnPlayer();
 //GHOSTS
 const spawnGhost = () => {
   //position de départ
-  let ghostPosition = 28;
+  let ghostPosition = 26;
   map[ghostPosition] |= GHOST;
 }
 spawnGhost();
 
-const placePoints = () => {
-
-  map[23] |= POINTS;
-
+//on met des points partout où les cases sont vides
+const placePointsOnEmptySpaces = () => {
+  for (let i = 0; i < map.length; i++) { //j'ai divisé par 4 parce que quand je les mets tous on se déconnecte du websocket
+    if (map[i] === EMPTY) {
+      map[i] = POINTS;
+    }
+  }
 }
 
-placePoints()
+placePointsOnEmptySpaces()
 
 const getPositionOf = (player) => {
   let index = map.indexOf(player);
@@ -147,7 +170,17 @@ const moveTo = (player, move) => {
   let newposition = playerPosition + move;
   // Check if the new position is valid before moving the player
   if (newposition >= 0 && newposition < map.length && !(map[newposition] & WALL)) {
-    // Check for collisions with the ghost
+    // Si le joueur passe sur une case avec des points on augmente le score
+    if(map[newposition] === POINTS) {
+      if(player == PACMAN){
+        scorePacman += 10;
+        console.log("bzzzz")
+      } else if (player === 4){
+        scoreGhost += 10;
+      }
+
+      map[newposition] = player;
+    }
 
     // Move the player
     map[playerPosition] &= ~player; // Clear the player's current position
@@ -179,11 +212,11 @@ ws.onopen = function (event) {
       if (PlayerControl == PACMAN) {
         switch (event.key) {
           case 'ArrowUp':
-            moveTo(PlayerControl, -15);
+            moveTo(PlayerControl, -14);
             break;
 
           case 'ArrowDown':
-            moveTo(PlayerControl, 15);
+            moveTo(PlayerControl, 14);
             break;
 
           case 'ArrowLeft':
@@ -243,6 +276,7 @@ ws.onopen = function (event) {
 
 ws.onclose = function (event) {
   console.log("Disconnected from websocket !");
+  console.error(event)
 };
 ws.onmessage = function (event) {
   //on récupère le message (controle) reçu
@@ -259,8 +293,8 @@ ws.onmessage = function (event) {
   //si on est pacman, on écoute les move des phantomes, update et send.
   if (PlayerControl == PACMAN) {
 
-    if (parseControl.message == "haut4") {
-      moveTo(GHOST, -15);
+    if (parseControl.message == "haut4"){
+      moveTo(GHOST, -14);
       sendMap();
     } else if (parseControl.message == "gauche4") {
       moveTo(GHOST, -1);
@@ -268,9 +302,9 @@ ws.onmessage = function (event) {
     } else if (parseControl.message == "droite4") {
       moveTo(GHOST, 1);
       sendMap();
-    } else if (parseControl.message == "bas4") {
-      console.log("message est bas4, GHOST=" + GHOST);
-      moveTo(GHOST, 15);
+    } else if (parseControl.message == "bas4"){
+      console.log("message est bas4, GHOST="+GHOST);
+      moveTo(GHOST, 14);
       sendMap();
     }
 
@@ -280,9 +314,3 @@ ws.onmessage = function (event) {
 ws.onerror = function (event) {
   console.log("Error Websocket : " + event.message);
 };
-
-
-
-
-
-
