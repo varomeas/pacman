@@ -4,8 +4,8 @@ const context = canvas.getContext("2d");
 //Paramètres de la grid
 const tileWidth = 26;  // Adjusted tile width to fit the larger grid within the canvas
 const tileHeight = 26; // Adjusted tile height to fit the larger grid within the canvas
-const gridRows = 15;   // Updated grid rows to match the larger map
-const gridCols = 15;   // Updated grid columns to match the larger map
+const gridRows = 14;   // Updated grid rows to match the larger map
+const gridCols = 14;   // Updated grid columns to match the larger map
 
 
 //définir chaque variable
@@ -62,21 +62,20 @@ startButton.addEventListener("click", sendMap);
 
 //map de 15 par 15
 let map = [
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-  1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
-  1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
-  1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1,
-  1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1,
-  1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1,
+  1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
+  1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1,
+  1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
+  1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1,
+  1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1,
+  1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1,
+  1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1,
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 ];
 
 function drawMap(newmap) {
@@ -135,7 +134,7 @@ const drawScore = () => {
 //PLAYER
 const spawnPlayer = () => {
   //position de départ
-  let spawnPosition = 16;
+  let spawnPosition = 15;
   map[spawnPosition] = PACMAN;
 }
 spawnPlayer();
@@ -143,14 +142,14 @@ spawnPlayer();
 //GHOSTS
 const spawnGhost = () => {
   //position de départ
-  let ghostPosition = 28;
+  let ghostPosition = 26;
   map[ghostPosition] |= GHOST;
 }
 spawnGhost();
 
 //on met des points partout où les cases sont vides
 const placePointsOnEmptySpaces = () => {
-  for (let i = 0; i < map.length/4; i++) { //j'ai divisé par 4 parce que quand je les mets tous on se déconnecte du websocket
+  for (let i = 0; i < map.length; i++) { //j'ai divisé par 4 parce que quand je les mets tous on se déconnecte du websocket
     if (map[i] === EMPTY) {
       map[i] = POINTS;
     }
@@ -208,11 +207,11 @@ ws.onopen = function (event) {
       if (PlayerControl == PACMAN) {
         switch (event.key) {
           case 'ArrowUp':
-            moveTo(PlayerControl, -15);
+            moveTo(PlayerControl, -14);
             break;
 
           case 'ArrowDown':
-            moveTo(PlayerControl, 15);
+            moveTo(PlayerControl, 14);
             break;
 
           case 'ArrowLeft':
@@ -272,6 +271,7 @@ ws.onopen = function (event) {
 
 ws.onclose = function (event) {
   console.log("Disconnected from websocket !");
+  console.error(event)
 };
 ws.onmessage = function (event) {
   //on récupère le message (controle) reçu
