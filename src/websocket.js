@@ -21,6 +21,7 @@ let scoreGhost = 0;
 
 
 //séléction du joueur
+const selectionDiv = document.getElementById('selection');
 const pacmanButton = document.getElementById("pacman");
 const ghostButton = document.getElementById("ghost");
 pacmanButton.addEventListener("click", selectPlayer);
@@ -30,10 +31,14 @@ let PlayerControl;
 function selectPlayer() {
   PlayerControl = PACMAN;
   console.log(PlayerControl);
+  pacmanButton.style.display = 'none';
+  ghostButton.style.display = 'none';
 }
 function selectGhost() {
   PlayerControl = GHOST;
   console.log(PlayerControl);
+  pacmanButton.style.display = 'none';
+  ghostButton.style.display = 'none';
 }
 
 function sendMap() {
@@ -45,7 +50,10 @@ function sendMap() {
 }
 //démarrage du jeu
 const startButton = document.getElementById("start");
-startButton.addEventListener("click", sendMap);
+startButton.addEventListener("click", function() {
+  sendMap();
+  startButton.style.display = 'none';
+});
 
 //save de la map 10 par 10 qui marche
 // let map = [
