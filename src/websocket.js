@@ -212,7 +212,7 @@ ws.onopen = function (event) {
       canSendMap = false;
       setTimeout(() => {
         canSendMap = true;
-      }, 500);
+      }, 1000);
 
       //si le joueur est Pacman (hote), il fait ses mouvements en local et envoie la map aux autres joueurs.
       if (PlayerControl == PACMAN) {
