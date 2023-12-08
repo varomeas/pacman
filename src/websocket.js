@@ -85,6 +85,9 @@ function drawMap(newmap) {
   pacmanimg.src = "./src/assets/img/Pacman.png";
   context.clearRect(0, 0, canvas.width, canvas.height);
 
+  let ghostimg = new Image();
+  ghostimg.src = "./src/assets/img/Ghost.png";
+
   for (let eachRow = 0; eachRow < gridRows; eachRow++) {
     for (let eachCol = 0; eachCol < gridCols; eachCol++) {
       let arrayIndex = eachRow * gridRows + eachCol;
@@ -101,8 +104,9 @@ function drawMap(newmap) {
         context.fillStyle = "black"; //Vide
         context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
       } else if (newmap[arrayIndex] === 4) {
-        context.fillStyle = "red"; // Ghost
-        context.fillRect(tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
+        ghostimg.onload = function() {
+        context.drawImage(ghostimg, tileWidth * eachCol, tileHeight * eachRow, tileWidth, tileHeight);
+        }
       } else if (newmap[arrayIndex] === 6) {
         context.fillStyle = "purple"; // Collision Pacman + Ghost GAME OVER
         alert("Game Over! You touched the ghost. Your Score: " + scorePacman);
@@ -208,7 +212,7 @@ ws.onopen = function (event) {
       canSendMap = false;
       setTimeout(() => {
         canSendMap = true;
-      }, 300);
+      }, 500);
 
       //si le joueur est Pacman (hote), il fait ses mouvements en local et envoie la map aux autres joueurs.
       if (PlayerControl == PACMAN) {
