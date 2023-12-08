@@ -117,8 +117,9 @@ function drawMap(newmap) {
         }
       } else if (newmap[arrayIndex] === 6) {
         context.fillStyle = "purple"; // Collision Pacman + Ghost GAME OVER
-        alert("Game Over! Your Score: " + scorePacman);
         location.reload(); // Refresh the page to restart the game
+        alert("Game Over! Your Score: " + scorePacman);
+        
       } else if (newmap[arrayIndex] === POINTS) { //Points
         context.fillStyle = "black"; //fond du point est noir
         context.fillRect(
@@ -128,8 +129,8 @@ function drawMap(newmap) {
             tileHeight
         );
         context.beginPath(); //le point est un cercle vert
-        context.arc((tileWidth * eachCol)+tileWidth/2, (tileHeight * eachRow)+tileHeight/2, 5, 0, 2 * Math.PI)
-        context.fillStyle = "green"
+        context.arc((tileWidth * eachCol)+tileWidth/2, (tileHeight * eachRow)+tileHeight/2, 3, 0, 2 * Math.PI)
+        context.fillStyle = "#FF75ED"
         context.fill()
         context.closePath();
       }else {
@@ -149,8 +150,9 @@ const drawScore = () => {
   //Game Over quand Pacman mange tout les points
   
 if(scorePacman == 800){
-  alert("Game Over! Pacman Score: " + scorePacman);
   location.reload(); // Refresh the page to restart the game
+  alert("Game Over! Pacman Score: " + scorePacman);
+  
 }
 }
 
@@ -186,6 +188,18 @@ const getPositionOf = (player) => {
   return index;
 }
 
+//ajout d'un son quand pacman mange
+function playScoreSound() {
+  var scoreAudio = document.getElementById("scoreSound");
+  scoreAudio.play();
+}
+
+//ajout d'un son quand pacman mange
+function PlaygGhostSound() {
+  var ghostAudioclip = document.getElementById("ghost");
+  ghostAudioclip.play();
+}
+
 const moveTo = (player, move) => {
   let playerPosition = getPositionOf(player);
   let newposition = playerPosition + move;
@@ -195,7 +209,7 @@ const moveTo = (player, move) => {
     if(map[newposition] === POINTS) {
       if(player == PACMAN){
         scorePacman += 10;
-        console.log("bzzzz")
+        playScoreSound();
       } else if (map[newposition] === POINTS && player === GHOST) {
         map[playerPosition] = POINTS; // Clear the ghost's current position
         map[newposition] = GHOST; // Set the ghost's new position
@@ -262,6 +276,7 @@ ws.onopen = function (event) {
             };
             var jsonControl = JSON.stringify(sendControl);
             ws.send(jsonControl);
+            PlaygGhostSound();
             break;
 
           case 'ArrowDown':
@@ -271,6 +286,7 @@ ws.onopen = function (event) {
             };
             var jsonControl = JSON.stringify(sendControl);
             ws.send(jsonControl);
+            PlaygGhostSound();
             break;
 
           case 'ArrowLeft':
@@ -280,6 +296,7 @@ ws.onopen = function (event) {
             };
             var jsonControl = JSON.stringify(sendControl);
             ws.send(jsonControl);
+            PlaygGhostSound();
             break;
 
           case 'ArrowRight':
@@ -289,6 +306,7 @@ ws.onopen = function (event) {
             };
             var jsonControl = JSON.stringify(sendControl);
             ws.send(jsonControl);
+            PlaygGhostSound();
             break;
         }
       }
@@ -320,15 +338,19 @@ ws.onmessage = function (event) {
     if (parseControl.message == "haut4"){
       moveTo(GHOST, -14);
       sendMap();
+      PlaygGhostSound();
     } else if (parseControl.message == "gauche4") {
       moveTo(GHOST, -1);
       sendMap();
+      PlaygGhostSound();
     } else if (parseControl.message == "droite4") {
       moveTo(GHOST, 1);
       sendMap();
+      PlaygGhostSound();
     } else if (parseControl.message == "bas4"){
       moveTo(GHOST, 14);
       sendMap();
+      PlaygGhostSound();
     }
 
   }
