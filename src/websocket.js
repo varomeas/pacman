@@ -136,7 +136,7 @@ function drawMap(newmap) {
 const drawScore = () => {
   context.fillStyle = "white";
   context.font = "20px Arial";
-  context.fillText("Score Pacman: " + scorePacman + " | Score Ghost: " + scoreGhost, 10, 20);
+  context.fillText("Score Pacman: " + scorePacman, 10, 20);
 }
 
 //PLAYER
