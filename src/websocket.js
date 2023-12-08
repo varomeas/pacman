@@ -117,9 +117,9 @@ function drawMap(newmap) {
         }
       } else if (newmap[arrayIndex] === 6) {
         context.fillStyle = "purple"; // Collision Pacman + Ghost GAME OVER
-        alert("Game Over! You touched the ghost. Your Score: " + scorePacman);
+        alert("Game Over! Your Score: " + scorePacman);
         location.reload(); // Refresh the page to restart the game
-      }else if (newmap[arrayIndex] === POINTS) { //Points
+      } else if (newmap[arrayIndex] === POINTS) { //Points
         context.fillStyle = "black"; //fond du point est noir
         context.fillRect(
             tileWidth * eachCol,
@@ -145,6 +145,13 @@ const drawScore = () => {
   context.fillStyle = "white";
   context.font = "20px Arial";
   context.fillText("Score Pacman: " + scorePacman, 10, 20);
+
+  //Game Over quand Pacman mange tout les points
+  
+if(scorePacman == 800){
+  alert("Game Over! Pacman Score: " + scorePacman);
+  location.reload(); // Refresh the page to restart the game
+}
 }
 
 //PLAYER
@@ -189,11 +196,14 @@ const moveTo = (player, move) => {
       if(player == PACMAN){
         scorePacman += 10;
         console.log("bzzzz")
-      } else if (player === 4){
-        scoreGhost += 10;
+      } else if (map[newposition] === POINTS && player === GHOST) {
+        map[playerPosition] = POINTS; // Clear the ghost's current position
+        map[newposition] = GHOST; // Set the ghost's new position
+        
+        return; // Exit the function without further execution
       }
 
-      map[newposition] = player;
+        map[newposition] = player;
     }
 
     // Move the player
