@@ -191,13 +191,15 @@ const getPositionOf = (player) => {
 //ajout d'un son quand pacman mange
 function playScoreSound() {
   var scoreAudio = document.getElementById("scoreSound");
+  scoreAudio.load();
   scoreAudio.play();
 }
 
 //ajout d'un son quand pacman mange
 function PlaygGhostSound() {
-  var ghostAudioclip = document.getElementById("ghost");
-  ghostAudioclip.play();
+  var ghostAudio = document.getElementById("ghostSound");
+  ghostAudio.load();
+  ghostAudio.play();
 }
 
 const moveTo = (player, move) => {
