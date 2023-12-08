@@ -1,0 +1,24 @@
+#selection {
+    margin-right: 30px;
+}
+
+#selection button {
+    padding: 20px 40px;
+    font-size: 2rem;
+    border: none;
+    font-family: "Pixelify Sans";
+}
+
+#pacman {
+    background-color: rgb(247, 247, 143);
+}
+
+#ghost {
+    background-color: turquoise;
+}
+
+#start {
+    background-color:#2a2bd4;
+    color: white;
+    text-transform: uppercase;
+}
