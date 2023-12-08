@@ -212,7 +212,7 @@ ws.onopen = function (event) {
       canSendMap = false;
       setTimeout(() => {
         canSendMap = true;
-      }, 1000);
+      }, 500);
 
       //si le joueur est Pacman (hote), il fait ses mouvements en local et envoie la map aux autres joueurs.
       if (PlayerControl == PACMAN) {
@@ -309,7 +309,6 @@ ws.onmessage = function (event) {
       moveTo(GHOST, 1);
       sendMap();
     } else if (parseControl.message == "bas4"){
-      console.log("message est bas4, GHOST="+GHOST);
       moveTo(GHOST, 14);
       sendMap();
     }
